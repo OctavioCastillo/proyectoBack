@@ -14,15 +14,21 @@ const createMovie = asyncHandler (async (req, res) =>{
         throw new Error('Faltan datos')
     }
 
-    const movie = await Movie.create({
-        title: req.body.title,
-        year: req.body.year,
-        director: req.body.director,
-        sinopsis: req.body.sinopsis,
-        img: req.body.img
-    })
+    if (req.user.esAdmin){
+        const movie = await Movie.create({
+            title: req.body.title,
+            year: req.body.year,
+            director: req.body.director,
+            sinopsis: req.body.sinopsis,
+            img: req.body.img,
+            admin: req.user._id
+        })
+        res.status(201).json(movie)
+    }else{
+        res.status(400)
+        throw new Error('No eres admin')
+    }
 
-    res.status(201).json(movie)
 })
 
 const updateMovie = asyncHandler (async (req, res) =>{
@@ -34,9 +40,14 @@ const updateMovie = asyncHandler (async (req, res) =>{
         throw new Error('La película no existe')
     }
 
-    const movieUpdated  = await Movie.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    if (req.user.esAdmin){
+        const movieUpdated  = await Movie.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        res.status(202).json(movieUpdated)
+    }else {
+        res.status(400)
+        throw new Error('No eres admin')
+    }
 
-    res.status(202).json(movieUpdated)
 })
 
 const deleteMovie = asyncHandler (async (req, res) =>{
@@ -48,8 +59,14 @@ const deleteMovie = asyncHandler (async (req, res) =>{
         throw new Error('La película no existe')
     }
 
-    await Movie.deleteOne(movie)
-    res.status(202).json({id: req.params.id})
+    if(req.user.esAdmin){
+        res.status(202).json({id: req.params.id})
+        await Movie.deleteOne(movie)
+    }else{
+        res.status(405)
+        throw new Error('No eres admin')
+    }
+
 })
 
 module.exports = {

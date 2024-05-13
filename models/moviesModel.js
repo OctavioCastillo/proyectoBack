@@ -24,6 +24,11 @@ const movieSchema = mongoose.Schema({
     img : {
         type: String,
         required: [true, "Ingresa la imagen de la película"]
+    },
+    admin: {
+        type: mongoose.Schema.Types.ObjectId, //es tipo id de un objeto
+        required: true,
+        ref:'User' 
     }
 }, {
     timestamps: true // mongo crea 2 campos, para la fecha de creación y de update
