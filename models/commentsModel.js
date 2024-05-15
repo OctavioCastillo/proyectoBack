@@ -15,9 +15,8 @@ const commentSchema = mongoose.Schema({
         required : [true, "Por favor califica la película"]
     },
     movie: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         required: true,
-        ref: 'Movie'
     },
 }, {
     timestamps: true // mongo crea 2 campos, para la fecha de creación y de update

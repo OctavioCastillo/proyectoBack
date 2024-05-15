@@ -3,6 +3,19 @@ const bcrypt = require('bcryptjs')
 const asyncHandler = require('express-async-handler')
 const User = require('../models/usersModel')
 
+const getUserName = asyncHandler (async (req, res) =>{
+
+    const userId = req.params.id
+
+    if(!userId){
+        res.status(400)
+        throw new Error('Falta el id del usuario')
+    }
+
+    const name = await User.find({_id: userId})
+    res.status(200).json(name)
+})
+
 const register = asyncHandler(async (req, res) => {
 
     //desestructurar un objeto 
@@ -65,7 +78,9 @@ const showdata = asyncHandler (async (req, res) => {
     res.status(200).json(req.user) // se obtiene del authMiddleware
 })
 
+
 module.exports = {
+    getUserName,
     register,
     login,
     showdata
